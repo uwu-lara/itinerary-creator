@@ -1,0 +1,179 @@
+<div>
+    <div class="flex justify-center mt-8">
+        <img src="./../../assets/1.jpg">
+    </div>
+</div>
+<div>
+    <form [formGroup]="itineraryForm" class="space-y-4 max-w-md mx-auto p-4">
+        <!-- Client Name (Text Input) -->
+        <div>
+          <label for="clientName" class="block text-sm font-medium text-gray-700">Client Name</label>
+          <input type="text" id="clientName" formControlName="clientName" class="p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+        </div>
+                @if(itineraryForm.get('clientName')!.invalid && itineraryForm.get('clientName')!.touched){
+                    <p class="text-red-600 text-xs">Client Name is required.</p>
+                }
+
+      
+        <!-- Pax Count (Number Input) -->
+        <div>
+          <label for="paxCount" class="block text-sm font-medium text-gray-700">Pax Count</label>
+          <input type="number" id="paxCount" formControlName="paxCount" class="p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+        </div>
+        @if(itineraryForm.get('paxCount')!.invalid && itineraryForm.get('paxCount')!.touched){
+            <p class="text-red-600 text-xs">Pax Count is required.</p>
+        }
+        <!-- Duration (Combo Box) -->
+        <div>
+          <label for="duration" class="block text-sm font-medium text-gray-700">Duration</label>
+          <select id="duration" formControlName="duration" class="p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+            <option value="">Select duration</option>
+            @for (duration of durations; track duration){
+              <option [value]="duration">{{ duration }}</option>
+          }
+          </select>
+        </div>
+        @if(itineraryForm.get('duration')!.invalid && itineraryForm.get('duration')!.touched){
+            <p class="text-red-600 text-xs">Duration is required.</p>
+        }
+      
+        <!-- Start Date (Date Input) -->
+        <div>
+          <label for="startDate" class="block text-sm font-medium text-gray-700">Start Date</label>
+          <input type="date" [min]="today" id="startDate" formControlName="startDate" class="p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+        </div>
+        @if(itineraryForm.get('startDate')!.invalid && itineraryForm.get('startDate')!.touched){
+            <p class="text-red-600 text-xs">Start Date is required.</p>
+        }
+        <div>
+          <label for="startQuote" class="block text-sm font-medium text-gray-700">Start Quote</label>
+          <textarea id="startQuote" formControlName="startQuote" class="p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></textarea>
+        </div>
+
+        <div>
+          <label for="endQuote" class="block text-sm font-medium text-gray-700">End Quote</label>
+          <textarea id="endQuote" formControlName="endQuote" class="p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"></textarea>
+        </div>
+
+        <!-- Destination and Number Input -->
+        <div formArrayName="destinationFields">
+            @for(destinationField of destinationFields.controls; track destinationField; let i = $index){
+              <div [formGroupName]="i" class="border-zinc-950 border rounded-md shadow-sm my-2">
+                <!-- Destination and Days Count Input -->
+                <div class="flex space-x-2">
+                <div class="w-2/3">
+                  <label for="destination{{ i }}" class="block text-sm font-medium text-gray-700">Destination {{ i + 1 }}</label>
+                  <select id="destination{{ i }}" formControlName="destination" class="p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                    <option value="">Select destination</option>
+                    @for (destination of getAvailableDestinations(i); track destination){
+                      <option [value]="destination">{{ destination }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="w-1/3">
+                  <label for="destinationCount{{ i }}" class="block text-sm font-medium text-gray-700">Days Count</label>
+                  <input min="0" type="number" id="destinationCount{{ i }}" formControlName="destinationCount" class="p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                </div>
+                </div>
+              
+                <div>
+                  <label for="destinationNote" class="block text-sm font-medium text-gray-700">Destination Note</label>
+                  <input type="text" id="destinationNote" formControlName="destinationNote" class="p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                </div>
+              <!-- Hotel Fields -->
+               @if(getHotels(i)){
+                <div formArrayName="hotels">
+                  @for(hotel of getHotels(i).controls; track hotel; let j = $index){
+                    <div [formGroupName]="j" class="space-y-2 mt-4 p-2 border border-gray-300 rounded-md relative">
+                      <button
+                        type="button"
+                        class="absolute top-2 right-2 text-red-600 bg-transparent hover:text-red-800 focus:outline-none"
+                        (click)="removeHotel(i, j)"
+                        aria-label="Remove Hotel"
+                      >
+                        ✖
+                      </button>
+                      <div>
+                        <label for="starCategory" class="block text-sm font-medium text-gray-700">Star Category</label>
+                        <select id="starCategory" formControlName="starCategory" class="p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                          <option value="">Select duration</option>
+                          <option value=3>3 Star</option>
+                            <option value=4>4 Star</option>
+                            <option value=5>5 Star</option>
+                        </select>
+                      </div>
+                      @if(itineraryForm.get('duration')!.invalid && itineraryForm.get('duration')!.touched){
+                          <p class="text-red-600 text-xs">Duration is required.</p>
+                      }
+                      <div class="flex space-x-2">
+                        <div class="w-2/3 z-15000">
+                          <label for="hotel{{ j }}" class="block text-sm font-medium text-gray-700">Hotel {{ j + 1 }}</label>
+                          <select id="hotelName{{ i }}" formControlName="hotelName" class="p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <option value="">Select Hotel</option>
+                            @for (hotel of getAvailableHotels(i,j); track hotel){
+                              <option [value]="hotel.hotelName">{{ hotel.hotelName }} - {{hotel.destination}} ({{hotel.starCategory}}<span class="text-red-600"> Star</span>)</option>
+                            }
+                          </select>
+                        </div>
+                        <!-- <ng-select 
+                        [items]="getAvailableHotels(i, j)"
+                        bindLabel="hotelName"
+                        bindValue="hotelName"
+                        formControlName="hotelName"
+                        [searchable]="true"
+                        placeholder="Select Hotel">
+                          <ng-template ng-option-tmp let-item="item">
+                            {{ item.hotelName }} - {{ item.destination }} ({{ item.starCategory }}<span class="text-red-600"> Star</span>)
+                          </ng-template>
+                      </ng-select> -->
+                        <div class="w-1/3">
+                          <label for="hotelStayDaysCount{{ j }}" class="block text-sm font-medium text-gray-700">Days Count</label>
+                          <input min="0" type="number" id="hotelStayDaysCount{{ j }}" formControlName="hotelStayDaysCount" class="p-2 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" (ngOnChange)="getTotalHotelStayDaysCount()">
+                        </div>
+                      </div>
+                
+                      <div class="flex flex-col">
+                        <label>Single Room Count</label>
+                        <input type="number" formControlName="singleRoomCount">
+                      
+                        <label>Double Room Count</label>
+                        <input type="number" formControlName="doubleRoomCount">
+                      
+                        <label>Triple Room Count</label>
+                        <input type="number" formControlName="tripleRoomCount">
+                      
+                        <label>Meal Type</label>
+                        <select formControlName="mealType">
+                          @for (mealType of mealTypeOptions; track mealType){
+                            <option [value]="mealType.value">{{ mealType.label }}</option>
+                          }
+                        </select>
+                      </div>
+
+                    </div>
+                  }
+                </div>
+                
+            }
+              <!-- Add New Hotel Button -->
+              @if(getTotalHotelStayDaysCount() < durationValue){
+               <div class="text-right my-2">
+                   <button (click)="addHotel(i)" class="bg-lime-600 hover:bg-lime-700 text-white px-2 py-1 rounded">Add New Hotel</button><br/>
+               </div>
+            }
+            
+        </div>
+            }          
+          </div>
+          @if(destinationCountSum > durationValue){
+            <p class="text-red-600 text-xs">Total destination count exceeds the selected duration.</p>
+        }
+                      @if(destinationCountSum < durationValue){
+                      <button (click)="addNewDestinationField()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-2 py-1 rounded">Add New Destination</button>
+                      }
+        
+        <!-- Submit Button -->
+        <button (click)="Submit()" class="w-full bg-purple-600 text-white rounded-md py-2 hover:bg-purple-700">Submit</button>
+      </form>
+      
+</div>

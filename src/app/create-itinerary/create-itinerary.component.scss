@@ -1,0 +1,57 @@
+.dropdown-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .dropdown-search {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dropdown-list {
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 4px;
+    padding: 0;
+    list-style: none;
+  }
+  
+  .dropdown-group {
+    padding: 8px;
+  }
+  
+  .dropdown-group-label {
+    background-color: #f9f9f9;
+    padding: 4px 8px;
+    display: block;
+    font-size: 0.9rem;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .dropdown-item {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  ng-select .ng-option {
+    white-space: normal !important; /* Ensures full text is visible */
+  }
